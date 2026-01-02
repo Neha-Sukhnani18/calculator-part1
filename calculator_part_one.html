@@ -51,11 +51,55 @@
         .operator:focus, .number:focus, .empty:focus{
             outline:0;
         }
+        #history{
+            text-align:right;
+            height:20px;
+            margin:0 20px;
+            padding-top:20px;
+            font-size:15px;
+            color:grey;
+        }
+        #output{
+            text-align:right;
+            height:60px;
+            margin:10pc 20px;
+            font-size:30px;
+        }
+        button:nth-child(4){
+            font-size:20px;
+            background-color:aqua;
+        }
+        button:nth-child(8){
+            font-size:20px;
+            background-color:orangered;
+        }
+        button:nth-child(12){
+            font-size:20px;
+            background-color:palevioletred;
+        }
+        button:nth-child(16){
+            font-size:20px;
+            background-color:blue;
+        }
+        button:nth-child(20){
+            font-size:20px;
+            background-color:blueviolet;
+        }
         </style>
     </head>
     <body>
+
+
         <div id="container">
             <div id="calculator">
+<div id="result">
+                    <div id="history">
+                        <p id="history-value"></p>
+                        </div>
+                        <div id="output">
+                            <p id="output-value"></p>
+                        </div>
+                        </div>
                 <div id="keyboard">
                     <button class="operator" id="clear">C</button>
                     <button class="operator" id="backspace">CE</button>
@@ -80,5 +124,143 @@
                 </div>
             </div>
         </div>
+        <script>
+            function getHistory() {
+
+                return document.getElementById("history-value").innerText;
+
+            }
+
+            function printHistory(num) {
+
+                document.getElementById("history-value").innerText = num;
+
+            }
+
+            function getOutput() {
+
+                return document.getElementById("output-value").innerText;
+
+            }
+
+            function printOutput(num) {
+
+                if (num === "") {
+
+                    document.getElementById("output-value").innerText = "";
+
+                } else {
+
+                    document.getElementById("output-value").innerText = Number(num).toLocaleString("en");
+
+                }
+
+            }
+
+            // Remove commas for calculation
+
+            function reverseNumberFormat(num) {
+
+                return Number(num.replace(/,/g, ""));
+
+            }
+
+            // NUMBER BUTTONS
+
+            var numberButtons = document.getElementsByClassName("number");
+
+            for (let i = 0; i < numberButtons.length; i++) {
+
+                numberButtons[i].addEventListener("click", function () {
+
+                    var output = reverseNumberFormat(getOutput());
+
+                    if (!isNaN(output)) {
+
+                        output = output + this.id;
+
+                        printOutput(output);
+
+                    }
+
+                });
+
+            }
+            var operatorButtons = document.getElementsByClassName("operator");
+
+            for (let i = 0; i < operatorButtons.length; i++) {
+
+                operatorButtons[i].addEventListener("click", function () {
+
+                    if (this.id === "clear") {
+
+                        printHistory("");
+
+                        printOutput("");
+
+                    }
+
+                    else if (this.id === "backspace") {
+
+                        var output = reverseNumberFormat(getOutput()).toString();
+
+                        if (output) {
+
+                            output = output.substr(0, output.length - 1);
+
+                            printOutput(output);
+
+                        }
+
+                    }
+
+                    else {
+
+                        var output = getOutput();
+
+                        var history = getHistory();
+
+                        if (output === "" && history !== "") {
+
+                            if (isNaN(history[history.length - 1])) {
+
+                                history = history.substr(0, history.length - 1);
+
+                            }
+
+                        }
+
+                        if (output !== "" || history !== "") {
+
+                            output = output === "" ? output : reverseNumberFormat(output);
+
+                            history = history + output;
+
+                            if (this.id === "=") {
+
+                                var result = eval(history);
+
+                                printOutput(result);
+
+                                printHistory("");
+
+                            } else {
+
+                                history = history + this.id;
+
+                                printHistory(history);
+
+                                printOutput("");
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+        </script>
     </body>
 </html>
